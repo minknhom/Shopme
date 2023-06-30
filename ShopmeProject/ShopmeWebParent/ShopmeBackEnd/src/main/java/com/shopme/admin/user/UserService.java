@@ -31,6 +31,10 @@ public class UserService {
 		return (List<User>) userRepo.findAll();
 	}
 	
+	public User getByEmail(String email) {
+		return userRepo.getUserByEmaiil(email);
+	}
+	
 	 public Page<User> listByPage(int pageNum, String sortField, String sortDir, String keyword){
 		 Sort sort = Sort.by(sortField);
 		 
@@ -52,9 +56,9 @@ public class UserService {
 
 	public User save(User user) {
 		boolean isUpdatingUser = (user.getId() != null);
-		
+		User existingUser = userRepo.findById(user.getId()).get();
 		if (isUpdatingUser) {
-			User existingUser = userRepo.findById(user.getId()).get();
+			
 			
 			if (user.getPassword().isEmpty()) {
 				user.setPassword(existingUser.getPassword());
@@ -67,6 +71,25 @@ public class UserService {
 
 		return userRepo.save(user);
 		
+	}
+	
+	public User updateAccount(User userInform) {
+		
+		User userInDB = userRepo.findById(userInform.getId()).get();
+		if (!userInform.getPassword().isEmpty()) {
+			userInDB.setPassword(userInform.getPassword());	
+			encodePassword(userInDB);
+		}
+
+		if (userInform.getPhotos() != null) {
+			userInDB.setPhotos(userInform.getPhotos());
+		}
+		
+		userInDB.setFirstName(userInform.getFirstName());
+		userInDB.setLastName(userInform.getLastName());
+		
+		return userRepo.save(userInDB);
+	
 	}
 	
 	private void encodePassword(User user) {

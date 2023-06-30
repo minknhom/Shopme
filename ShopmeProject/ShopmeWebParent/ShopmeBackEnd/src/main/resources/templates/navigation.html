@@ -17,28 +17,66 @@
 			</button>
 			<div class="collapse navbar-collapse" id="topNavbar">
 				<ul class="navbar-nav mr-auto">
-					<li class="nav-item"><a class="nav-link" th:href="@{/users}">Users</a>
+				
+					<li class="nav-item" sec:authorize="hasAuthority('Admin')">
+						<a class="nav-link" th:href="@{/users}">Users</a>
 					</li>
-					<li class="nav-item"><a class="nav-link"
-						th:href="@{/categories}">Categories</a></li>
-					<li class="nav-item"><a class="nav-link" th:href="@{/brands}">Brands</a>
+					
+					<th:block sec:authorize="hasAnyAuthority('Admin','Editor')">
+					<li class="nav-item">
+						<a class="nav-link" th:href="@{/categories}">Categories</a></li>
+					</th:block>
+					
+					<th:block sec:authorize="hasAnyAuthority('Admin','Editor')">
+					<li class="nav-item">
+						<a class="nav-link" th:href="@{/brands}">Brands</a>
 					</li>
-					<li class="nav-item"><a class="nav-link"
-						th:href="@{/products}">Products</a></li>
-					<li class="nav-item"><a class="nav-link"
-						th:href="@{/customers}">Customers</a></li>
-					<li class="nav-item"><a class="nav-link"
-						th:href="@{/shipping}">Shipping</a></li>
-					<li class="nav-item"><a class="nav-link" th:href="@{/orders}">Orders</a>
+					</th:block>
+					
+					<th:block sec:authorize="hasAnyAuthority('Admin','Editor','Salesperson','Shipper' )">
+					<li class="nav-item">
+						<a class="nav-link" th:href="@{/products}">Products</a>
 					</li>
-					<li class="nav-item"><a class="nav-link" th:href="@{/report}">Sales
-							Report</a></li>
-					<li class="nav-item"><a class="nav-link"
-						th:href="@{/articles}">Articles</a></li>
-					<li class="nav-item"><a class="nav-link" th:href="@{/menu}">Menu</a>
+					</th:block>
+					
+					<th:block sec:authorize="hasAnyAuthority('Admin','Salesperson'">
+					<li class="nav-item">
+						<a class="nav-link" th:href="@{/customers}">Customers</a>
 					</li>
-					<li class="nav-item"><a class="nav-link"
-						th:href="@{/settings}">Settings</a></li>
+					</th:block>
+					
+					<th:block sec:authorize="hasAnyAuthority('Admin','Salesperson')">
+					<li class="nav-item">
+						<a class="nav-link" th:href="@{/shipping}">Shipping</a>
+					</li>
+					</th:block>
+					
+					<th:block sec:authorize="hasAnyAuthority('Admin','Salesperson','Shipper')">
+					<li class="nav-item">
+						<a class="nav-link" th:href="@{/orders}">Orders</a>
+					</li>
+					</th:block>
+					
+					<th:block sec:authorize="hasAnyAuthority('Admin','Salesperson')">
+					<li class="nav-item">
+						<a class="nav-link" th:href="@{/report}">SalesReport</a>
+					</li>
+					
+					<th:block sec:authorize="hasAnyAuthority('Admin','Editor')">
+					<li class="nav-item">
+						<a class="nav-link" th:href="@{/articles}">Articles</a>
+					</li>
+					</th:block>
+					
+					<th:block sec:authorize="hasAnyAuthority('Admin','Editor')">	
+					<li class="nav-item">
+						<a class="nav-link" th:href="@{/menu}">Menu</a>
+					</li>
+					</th:block>
+
+					<li class="nav-item"  sec:authorize="hasAuthority('Admin')">
+						<a class="nav-link" th:href="@{/settings}">Settings</a>
+					</li>
 
 				</ul>
 				<ul class="navbar-nav">
@@ -46,8 +84,9 @@
 						class="fa-solid fa-user fa-xl icon-user"></i></li>
 					<li class="nav-item dropdown"><a
 						class="nav-link dropdown-toggle" data-toggle="dropdown"
-						sec:authentication ="principal.username"></a>
+						sec:authentication ="principal.fullname"></a>
 						<div class="dropdown-menu">
+							<a class="dropdown-item"  th:href="@{/account}">User details</a>
 							<a class="dropdown-item" id="logoutLink" href="#">Logout</a>
 						</div></li>
 				</ul>
