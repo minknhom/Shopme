@@ -3,6 +3,8 @@ package com.shopme.admin.user;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import com.shopme.admin.security.ShopmeUserDetails;
+
 public class PasswordEncoderTest {
 
 	@Test
@@ -13,4 +15,5 @@ public class PasswordEncoderTest {
 		
 		System.out.println(encodedPassword);
 	}
+	
 }

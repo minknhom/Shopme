@@ -48,7 +48,7 @@ public class UserController {
 		List<User> listUsers = page.getContent();
 		
 		long startCount = (pageNum - 1) * UserService.USERS_PER_PAGE + 1;
-		long endCount = startCount + UserService.USERS_PER_PAGE + 1;
+		long endCount = startCount + UserService.USERS_PER_PAGE - 1;
 		
 		if(endCount > page.getTotalElements()) {
 			endCount = page.getTotalElements();
@@ -78,7 +78,10 @@ public class UserController {
 		model.addAttribute("user",user);
 		model.addAttribute("listRoles",listRoles);
 		model.addAttribute("pageTitle", "Create New User");
+
 		return "user_form";
+		
+		
 	}
 	
 	@PostMapping
