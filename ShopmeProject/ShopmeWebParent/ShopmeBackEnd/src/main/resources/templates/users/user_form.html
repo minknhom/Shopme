@@ -105,9 +105,11 @@
 		
 	</div>
 	<script type="text/javascript">
+		moduleURL = "[[@{/users}]]";
+		
 		$(document).ready(function() {
 			$("#buttonCancel").on("click", function() {
-				window.location = "[[@{/users}]]";
+				window.location = moduleURL;
 			});
 
 			$("#fileImage").change(function() {
@@ -130,28 +132,28 @@
 			userId = $("#id").val();
 			csrfValue = $("input[name='_csrf']").val();
 			params = {
-				id : userId,
-				email : userEmail,
-				_csrf : csrfValue
+				id: userId,
+				email: userEmail,
+				_csrf: csrfValue
 			};
 
 			$.post(
-					url,
-					params,
-					function(response) {
-						if (response == "OK") {
-							form.submit();
-						} else if (response == "Duplicated") {
-							showModalDialog("Warning",
-									"There is another user having the email "
-											+ userEmail);
-						} else {
-							showModalDialog("Error",
-									"Unknown response from server");
-						}
-					}).fail(function() {
-				showModalDialog("Error", "Could not connect to the server");
-			});
+				url,
+				params,
+				function(response) {
+					if (response == "OK") {
+						form.submit();
+					} else if (response == "Duplicated") {
+						showModalDialog("Warning",
+							"There is another user having the email "
+							+ userEmail);
+					} else {
+						showModalDialog("Error",
+							"Unknown response from server");
+					}
+				}).fail(function() {
+					showModalDialog("Error", "Could not connect to the server");
+				});
 
 			return false;
 		}
@@ -162,6 +164,7 @@
 			$("#modalDialog").modal();
 		}
 	</script>
+
 </body>
 <footer th:replace="fragments :: footer"></footer>
 </html>
