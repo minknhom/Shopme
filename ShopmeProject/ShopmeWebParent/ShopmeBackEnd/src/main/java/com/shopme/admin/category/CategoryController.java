@@ -17,8 +17,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.shopme.admin.FileUploadUtil;
+import com.shopme.admin.user.UserNotFoundException;
 import com.shopme.common.entity.Category;
-import com.shopme.common.entity.User;
+
+
 
 @Controller
 public class CategoryController {
@@ -97,6 +99,33 @@ public class CategoryController {
 				
 		redirectAttributes.addFlashAttribute("message","The category has been saved successfully.");
 		
+		return "redirect:/categories";
+	}
+	
+	@GetMapping("/categories/edit/{id}")
+	public String editCategory(@PathVariable(name = "id") Integer id, Model model, RedirectAttributes redirectAttributes) {
+		try {
+			Category category = service.get(id);
+			List<Category> listCategories = service.listCategoriesUsedInForm();
+			model.addAttribute("category", category);
+			model.addAttribute("listCategories", listCategories);
+			model.addAttribute("pageTitle", "Edit category (ID: "+ id +") ");
+			return "categories/category_form";
+		} catch (UserNotFoundException ex) {
+			redirectAttributes.addFlashAttribute("message", ex.getMessage());
+			return "redirect:/categories";
+		}
+		
+	}
+	
+	@GetMapping("/categories/delete/{id}")
+	public String deleteCategory(@PathVariable(name = "id") Integer id, Model model, RedirectAttributes redirectAttributes) {
+		try {
+			service.delete(id);
+			redirectAttributes.addFlashAttribute("message","The category ID: "+id+" has been deleted");
+		} catch (UserNotFoundException ex) {
+			redirectAttributes.addFlashAttribute("message", ex.getMessage());
+		}
 		return "redirect:/categories";
 	}
 	

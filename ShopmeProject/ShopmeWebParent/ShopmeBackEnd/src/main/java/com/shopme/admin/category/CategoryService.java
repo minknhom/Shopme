@@ -2,6 +2,7 @@ package com.shopme.admin.category;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.shopme.admin.user.UserNotFoundException;
 import com.shopme.common.entity.Category;
+
 
 @Service
 public class CategoryService {
@@ -46,13 +49,13 @@ public class CategoryService {
 		
 		for (Category category : categoriesInDB) {
 			if (category.getParent() == null) {
-				categoriesUsedInForm.add(new Category(category.getName()));
+				categoriesUsedInForm.add(Category.copyIdAndName(category));
 				
 				Set<Category> children = category.getChildren();
 				
 				for(Category subCategory : children) {
 					String name = "--" + subCategory.getName();
-					categoriesUsedInForm.add(new Category(name));
+					categoriesUsedInForm.add(Category.copyIdAndName(subCategory.getId(), name));
 					listChildren(categoriesUsedInForm, subCategory, 1);
 				}
 			}
@@ -71,7 +74,7 @@ public class CategoryService {
 			}
 			name += subCategory.getName();
 			
-			categoriesUsedInForm.add(new Category(name));
+			categoriesUsedInForm.add(Category.copyIdAndName(subCategory.getId(), name));
 			
 			listChildren(categoriesUsedInForm, subCategory, newSubLevel);
 		}
@@ -82,4 +85,19 @@ public class CategoryService {
 		return repo.save(category);
 	}
 	
+	public Category get(Integer id) throws UserNotFoundException {
+		try {
+			return repo.findById(id).get();
+		}catch(NoSuchElementException ex) {
+			throw new UserNotFoundException("Could not find any user with ID "+id );
+		}
+	}
+	
+	public void delete(Integer id) throws UserNotFoundException {
+		Long countById = repo.countById(id);
+		if(countById == null || countById == 0) {
+			throw new UserNotFoundException("Could not find any user with ID "+id );
+		}
+		repo.deleteById(id);
+	}
 }
