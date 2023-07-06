@@ -1,4 +1,4 @@
-package com.shopme.admin.category;
+package com.shopme.admin.brand;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,40 +12,49 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.shopme.admin.category.CategoryRepository;
 import com.shopme.admin.user.UserNotFoundException;
+import com.shopme.common.entity.Brand;
 import com.shopme.common.entity.Category;
 
-
 @Service
-public class CategoryService {
-
-	public static final int CATEGORIES_PER_PAGE = 4;
-	@Autowired
-	private CategoryRepository repo;
+public class BrandService {
 	
-	public List<Category> listAll(){
-		return (List<Category>) repo.findAll();
+	@Autowired
+	private BrandRepository brandRepo;
+	
+	@Autowired
+	private CategoryRepository categoryRepo;
+	
+	public static final int  BRANDS_PER_PAGE = 4;
+	
+	public List<Brand> listAll(){
+		return (List<Brand>) brandRepo.findAll();
 	}
 	
-	public Page<Category> listByPage(int pageNum, String sortField, String sortDir, String keyword){
+	public Page<Brand> listByPage(int pageNum, String sortField, String sortDir, String keyword){
 		 Sort sort = Sort.by(sortField);
 		 
 		 sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
 
 		 
-		 Pageable pageable =  PageRequest.of(pageNum - 1, CATEGORIES_PER_PAGE, sort);
+		 Pageable pageable =  PageRequest.of(pageNum - 1, BRANDS_PER_PAGE, sort);
 		 
 		 if (keyword != null) {
-			 return repo.findAll(keyword, pageable);
+			 return brandRepo.findAll(keyword, pageable);
 		 }
 		 
-		 return repo.findAll(pageable);
+		 return brandRepo.findAll(pageable);
 	 }
+	
+	public List<Category> listCategories(){
+		return (List<Category>) categoryRepo.findAll();
+	}
 	
 	public List<Category> listCategoriesUsedInForm(){
 		List<Category> categoriesUsedInForm = new ArrayList<>();
 		
-		Iterable<Category> categoriesInDB = repo.findAll();
+		Iterable<Category> categoriesInDB = categoryRepo.findAll();
 		
 		for (Category category : categoriesInDB) {
 			if (category.getParent() == null) {
@@ -81,23 +90,22 @@ public class CategoryService {
 		
 	}
 	
-	public Category save(Category category){
-		return repo.save(category);
+	public Brand save(Brand brand){
+		return brandRepo.save(brand);
 	}
-	
-	public Category get(Integer id) throws UserNotFoundException {
+	public Brand get(Integer id) throws UserNotFoundException {
 		try {
-			return repo.findById(id).get();
+			return brandRepo.findById(id).get();
 		}catch(NoSuchElementException ex) {
-			throw new UserNotFoundException("Could not find any category with ID "+id );
+			throw new UserNotFoundException("Could not find any brand with ID "+id );
 		}
 	}
 	
 	public void delete(Integer id) throws UserNotFoundException {
-		Long countById = repo.countById(id);
+		Long countById = brandRepo.countById(id);
 		if(countById == null || countById == 0) {
-			throw new UserNotFoundException("Could not find any category with ID "+id );
+			throw new UserNotFoundException("Could not find any brand with ID "+id );
 		}
-		repo.deleteById(id);
+		brandRepo.deleteById(id);
 	}
 }
