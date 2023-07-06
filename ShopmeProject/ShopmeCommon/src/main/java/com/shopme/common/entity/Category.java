@@ -136,4 +136,8 @@ public class Category {
 		return "/category-images/" + this.id + "/" +this.image;
 	}
 	
+	@Override
+	public String toString() {
+		return this.name;
+	}
 }
