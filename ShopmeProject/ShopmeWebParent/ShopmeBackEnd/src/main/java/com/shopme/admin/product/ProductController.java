@@ -62,11 +62,10 @@ public class ProductController {
 			@RequestParam(name = "detailValues", required = false) String[] detailValues
 	) throws IOException {
 		
-		setProductDetails(detailNames, detailValues, product);
-		
 		if(!multipartFile.isEmpty()) {
 			String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
 			product.setImage(fileName);
+			setProductDetails(detailNames, detailValues, product);
 			Product savedProduct = productService.save(product);
 			String uploadDir = "../product-images/" + savedProduct.getId();
 			
@@ -109,7 +108,9 @@ public class ProductController {
 	public String editProduct(@PathVariable(name = "id") Integer id, Model model, RedirectAttributes redirectAttributes) {
 		try {
 			Product product = productService.get(id);
+			List<Brand> listBrands = brandService.listAll();
 			model.addAttribute("product", product);
+			model.addAttribute("listBrands", listBrands);
 			model.addAttribute("pageTitle", "Edit product (ID: "+ id +") ");
 			return "products/product_form";
 		} catch (UserNotFoundException ex) {
