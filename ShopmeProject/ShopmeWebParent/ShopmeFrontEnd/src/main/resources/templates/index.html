@@ -1,10 +1,21 @@
 <!DOCTYPE html>
-<html>
-<head>
-<meta charset="ISO-8859-1">
-<title>Welcome to Shopme</title>
-</head>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head th:replace="fragments :: page_head('Shopme')"></head>
 <body>
-<h1>Welcome to Shopme eCommerce</h1>
+<div>
+			<h1>Shopping by Categories</h1>
+		</div>
+
+		<div class="row">
+			<div class="col" th:each="cat : ${listCategories}">
+				<div>
+					<img th:src="@{${cat.photosImagePath}}" width="80" />
+				</div>
+				<div>
+					<a th:href="@{'/c/' + ${cat.alias}}">[[${cat.name}]]</a>
+				</div>
+			</div>
+		</div>
 </body>
 </html>

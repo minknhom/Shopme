@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: page_head(${pageTitle})"></head>
+</head>
+<body>
+	<div class="container-fluid">
+		<div th:replace="navigation :: menu"></div>
+		<div>
+			<h2>Manage Products | [[${pageTitle}]]</h2>
+		</div>
+
+		<form th:action="@{/products/save}" method="post"
+			style="max-width: 700px; margin: 0 auto" enctype="multipart/form-data" th:object="${product}">
+			<div>
+				<!-- Nav tabs -->
+				<ul class="nav nav-tabs" id="myTab" role="tablist">
+					<li class="nav-item"><a class="nav-link active"
+						data-toggle="tab" href="#overview" role="tab">Overview</a></li>
+					<li class="nav-item"><a class="nav-link" data-toggle="tab"
+						href="#description" role="tab">Description</a></li>
+					<li class="nav-item"><a class="nav-link" data-toggle="tab"
+						href="#detail" role="tab">Details</a></li>
+					<li class="nav-item"><a class="nav-link" data-toggle="tab"
+						href="#shipping" role="tab">Shipping</a></li>
+				</ul>
+
+				<!-- Tab panes -->
+				<div class="tab-content">
+					<div class="tab-pane active" id="overview" role="tabpanel">
+						<div th:replace="products/product_overview :: content"></div>
+					</div>
+					<div class="tab-pane" id="description" role="tabpanel">
+						<div th:replace="products/product_description :: content"></div>
+					</div>
+					<div class="tab-pane" id="detail" role="tabpanel">
+					<div th:replace="products/product_detail :: content"></div>
+					<div>
+						<input type="button" class="btn btn-secondary" value="Add more detail"
+							onclick="addNextDetailsSection()"/>
+					</div>
+					</div>
+					<div class="tab-pane" id="shipping" role="tabpanel">
+						<div th:replace="products/product_shipping :: content"></div>
+					</div>
+				</div>
+			</div>
+
+
+			<div class="text-center">
+				<input type="submit" value="Save" class="btn btn-primary m-3" /> <input
+					type="submit" value="Cancel" class="btn btn-secondary"
+					id="buttonCancel" />
+			</div>
+
+		</form>
+
+
+
+	</div>
+	<script type="text/javascript">
+		moduleURL = "[[@{/products}]]";
+		moduleBrandURL = "[[@{/brands}]]";
+		
+		dropdownBrands = $("#brand");
+		dropdownCategories = $("#category")
+		
+		$(document).ready(function() {
+			$("#buttonCancel").on("click", function() {
+				window.location = moduleURL;
+				});
+			$("#fileImage").change(function() {
+				showImageThumbnail(this);
+			});
+			
+			dropdownBrands.change(function() {
+				dropdownCategories.empty();
+				getCategories();
+				});
+				getCategories();
+			});
+		
+		function showImageThumbnail(fileInput) {
+			var file = fileInput.files[0];
+			var reader = new FileReader();
+			reader.onload = function(e) {
+				$("#thumbnail").attr("src", e.target.result);
+			};
+			reader.readAsDataURL(file);
+		}
+		function getCategories(){
+			brandId = dropdownBrands.val();
+			url = moduleBrandURL + "/" + brandId + "/categories";
+			
+			$.get(url, function(responseJson) {
+				$.each(responseJson, function(index, category){
+					$("<option>").val(category.id).text(category.name).appendTo(dropdownCategories)
+				});
+			});
+		}
+		function addNextDetailsSection() {
+			allDivDetails = $("[id^='divDetail']");
+			divDetailsCount = allDivDetails.length;
+			
+			htmlDetailSection = `
+				<div class="form-inline" id = "divDetail${divDetailsCount}">
+					<label class="m-3">Name: </label>
+					<input type="text" class="form-control w-25" name="detailNames"/>
+					<label class="m-3">Value: </label>
+					<input type="text" class="form-control w-25" name="detailValues"/>
+				</div>		
+			`;
+			
+			$("#divProductDetails").append(htmlDetailSection);
+			
+			previousDivDetailSection = allDivDetails.last();
+			previousDivDetailId = previousDivDetailSection.attr("id");
+			
+			htmlLinkRemove = `
+				<a class="btn fa-solid fa-circle-xmark fa-lg"
+					href="javascript:removeDetailSectionById('${previousDivDetailId}')"
+					title="Remove this detail"></a>
+			`;
+			previousDivDetailSection.append(htmlLinkRemove);
+			
+		}
+		function removeDetailSectionById(id) {
+			$("#" + id).remove();
+		}
+		
+	</script>
+
+</body>
+<footer th:replace="fragments :: footer"></footer>
+</html>
