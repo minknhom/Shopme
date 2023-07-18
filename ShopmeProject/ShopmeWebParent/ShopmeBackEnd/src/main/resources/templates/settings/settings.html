@@ -2,8 +2,6 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <head th:replace="fragments :: page_head('Settings - Shopme Admin')" />
-    <link rel="stylesheet" th:href="@{/richtext/richtext.min.css}" />
-    <script th:src="@{/richtext/jquery.richtext.min.js}"></script>
 </head>
 <body>
 <div class="container-fluid">
@@ -34,10 +32,10 @@
 			<div th:replace="settings/general :: content"></div>
           </div>
           <div class="tab-pane p-3" id="mailServer" role="tabpanel">
-            <h2>Mail Server</h2>
+            <div th:replace="settings/mail_server :: content"></div>
           </div>
           <div class="tab-pane p-3" id="mailTemplates" role="tabpanel">
-            <h2>Mail Templates</h2>
+            <div th:replace="settings/mail_templates/mail_templates :: content"></div>
           </div>    
          </div>
     </div>
@@ -45,6 +43,8 @@
 </div>
 <script type="text/javascript">
     MAX_FILE_SIZE = 102400; // 100KB
+    
+    
 </script>
 <script th:src="@{/js/common_form.js}"></script>
 </body>
