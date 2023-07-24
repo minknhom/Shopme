@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html  xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" 
+        xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <body>
 <div th:fragment="header_menu">
     <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
@@ -21,7 +22,7 @@
                     <a class="nav-link" href="">Shipping &amp; Delivery</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="">Login</a>
+                    <a class="nav-link" th:href="@{/login}">Login</a>
                 </li>
                 <li class="nav-item">
            			<a class="nav-link" th:href="@{/register}">Register</a>
@@ -34,6 +35,7 @@
         
     </nav>
 </div>
+
 
 <div th:fragment="footer_menu">
     <div>
