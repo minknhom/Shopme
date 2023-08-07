@@ -63,7 +63,11 @@ public class Product {
 	
 	public Product() {
 		super();
-	}	
+	}
+	
+    public Product(Integer id) {
+        this.id = id;
+    }
 
 	public Integer getId() {
 		return id;
